@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
+  has_many :issues, dependent: :destroy
 
   EMAIL_REGEX = URI::MailTo::EMAIL_REGEXP
   PASSWORD_MIN_LENGTH = 12
