@@ -6,7 +6,8 @@
 %>
 <% marketing = local_assigns.fetch(:marketing, false) %>
 
-<nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+<nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100"
+     data-controller="menu">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
     <%= link_to root_path, class: "flex items-center gap-2 shrink-0" do %>
       <%= render "pages/logo", size: "w-8 h-8" %>
@@ -21,7 +22,8 @@
       </div>
     <% end %>
 
-    <div class="flex items-center gap-2 sm:gap-3">
+    <%# Desktop actions %>
+    <div class="hidden sm:flex items-center gap-2 sm:gap-3">
       <% if authenticated? %>
         <%= link_to t("nav.issues"), issues_path,
               class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
@@ -45,6 +47,51 @@
               class: "inline-flex items-center justify-center rounded-lg px-3 sm:px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
         <%= link_to t("nav.sign_up"), new_registration_path,
               class: "inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition" %>
+      <% end %>
+    </div>
+
+    <%# Mobile hamburger %>
+    <button type="button"
+            data-menu-target="button"
+            data-action="menu#toggle"
+            aria-label="Open menu"
+            aria-expanded="false"
+            class="sm:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 transition">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+
+  <%# Mobile dropdown panel %>
+  <div data-menu-target="panel"
+       class="sm:hidden hidden border-t border-gray-100 bg-white">
+    <div class="px-4 py-3 space-y-1">
+      <% if authenticated? %>
+        <%= link_to t("nav.issues"), issues_path,
+              class: "block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50" %>
+        <% if Current.user&.site_admin? %>
+          <%= link_to t("nav.admin"), admin_root_path,
+                class: "block rounded-lg px-3 py-2 text-base font-semibold text-blue-700 hover:bg-blue-50" %>
+        <% elsif Current.user&.manager? %>
+          <%= link_to t("nav.manager"), manager_root_path,
+                class: "block rounded-lg px-3 py-2 text-base font-semibold text-blue-700 hover:bg-blue-50" %>
+        <% elsif Current.user&.enforcement? %>
+          <%= link_to t("nav.officer"), officer_root_path,
+                class: "block rounded-lg px-3 py-2 text-base font-semibold text-blue-700 hover:bg-blue-50" %>
+        <% end %>
+        <%= link_to t("nav.profile"), edit_profile_path,
+              class: "block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50" %>
+        <div class="pt-2 mt-2 border-t border-gray-100">
+          <%= button_to t("nav.sign_out"), session_path, method: :delete,
+                form: { class: "block" },
+                class: "block w-full text-left rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 cursor-pointer" %>
+        </div>
+      <% else %>
+        <%= link_to t("nav.sign_in"), new_session_path,
+              class: "block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50" %>
+        <%= link_to t("nav.sign_up"), new_registration_path,
+              class: "block rounded-lg bg-blue-600 px-3 py-2 text-base font-semibold text-white text-center hover:bg-blue-700" %>
       <% end %>
     </div>
   </div>
