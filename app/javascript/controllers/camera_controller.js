@@ -52,13 +52,54 @@ export default class extends Controller {
       this.showFallback()
       return
     }
+
+    // Check existing permission state first so we don't re-prompt users who
+    // already granted access (Permissions API is cached per-origin in Chrome,
+    // Edge, and Firefox). If state is "prompt", we defer getUserMedia until
+    // the user actually taps Capture — browsers only remember a grant after
+    // the user explicitly approves, so asking pre-emptively on every page
+    // load is what causes the "keeps asking" experience.
+    const state = await this.cameraPermissionState()
+    if (state === "denied") {
+      this.showFallback()
+      return
+    }
+    if (state === "granted") {
+      await this.requestStream()
+    } else {
+      this.showNativePlaceholderForPrompt()
+    }
+  }
+
+  async cameraPermissionState() {
+    if (!navigator.permissions?.query) return "prompt"
+    try {
+      const result = await navigator.permissions.query({ name: "camera" })
+      return result.state
+    } catch {
+      return "prompt"
+    }
+  }
+
+  // Desktop variant of the native placeholder — looks the same but tapping
+  // it requests the stream (and triggers the browser's one-time prompt).
+  showNativePlaceholderForPrompt() {
+    this.pendingPrompt = true
+    this.videoTarget.classList.add("hidden")
+    if (this.hasNativePlaceholderTarget) this.nativePlaceholderTarget.classList.remove("hidden")
+  }
+
+  async requestStream() {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" } },
         audio: false
       })
       this.videoTarget.srcObject = this.stream
+      this.videoTarget.classList.remove("hidden")
+      if (this.hasNativePlaceholderTarget) this.nativePlaceholderTarget.classList.add("hidden")
       await this.videoTarget.play().catch(() => {})
+      this.pendingPrompt = false
     } catch (err) {
       console.warn("Camera unavailable:", err)
       this.showFallback()
@@ -86,8 +127,14 @@ export default class extends Controller {
   }
 
   capture() {
-    if (this.nativeMode || !this.stream) {
+    if (this.nativeMode) {
       if (this.hasCameraInputTarget) this.cameraInputTarget.click()
+      return
+    }
+    // Desktop: user tapped the dark placeholder (or Capture before stream
+    // was running) — this is the one place we ask for camera permission.
+    if (this.pendingPrompt || !this.stream) {
+      this.requestStream()
       return
     }
     if (!this.videoTarget.videoWidth) return
