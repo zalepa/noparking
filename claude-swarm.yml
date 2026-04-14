@@ -1,6 +1,6 @@
 version: 1
 swarm:
-  name: "Parksafe Rails Development Team"
+  name: "NoParking Rails Development Team"
   main: architect
   mcps:
     - name: rails
@@ -11,7 +11,7 @@ swarm:
         RAILS_ENV: development
   instances:
     architect:
-      description: "Rails architect coordinating full-stack development for Parksafe"
+      description: "Rails architect coordinating full-stack development for NoParking"
       directory: .
       model: opus
       connections: [models, controllers, views, stimulus, jobs, tests, devops]
