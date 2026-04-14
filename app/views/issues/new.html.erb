@@ -71,7 +71,6 @@
         <canvas data-camera-target="canvas" class="hidden"></canvas>
         <%= file_field_tag :photo_file_fallback,
               accept: "image/*",
-              capture: "environment",
               class: "hidden",
               data: { camera_target: "fileInput", action: "change->camera#fileSelected" } %>
         <%= hidden_field_tag "issue[photo_data]", nil, data: { camera_target: "dataField" } %>
