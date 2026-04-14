@@ -6,6 +6,9 @@
 %>
 <% marketing = local_assigns.fetch(:marketing, false) %>
 
+<% if authenticated? %>
+  <%= turbo_stream_from Current.user, :notifications %>
+<% end %>
 <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100"
      data-controller="menu">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -25,6 +28,7 @@
     <%# Desktop actions %>
     <div class="hidden sm:flex items-center gap-2 sm:gap-3">
       <% if authenticated? %>
+        <%= render "shared/notifications_bell" %>
         <%= link_to t("nav.issues"), issues_path,
               class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
         <% if Current.user&.site_admin? %>
@@ -50,17 +54,31 @@
       <% end %>
     </div>
 
-    <%# Mobile hamburger %>
+    <%# Mobile: bell + hamburger %>
+    <div class="sm:hidden flex items-center gap-1">
+      <% if authenticated? %>
+        <%= link_to notifications_path,
+              "aria-label": "Notifications",
+              class: "relative inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 transition" do %>
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <% if (count = unread_notifications_count) > 0 %>
+            <span class="absolute top-1 right-1 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-semibold min-w-[1.125rem] h-[1.125rem] px-1"><%= count %></span>
+          <% end %>
+        <% end %>
+      <% end %>
     <button type="button"
             data-menu-target="button"
             data-action="menu#toggle"
             aria-label="Open menu"
             aria-expanded="false"
-            class="sm:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 transition">
+            class="inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 transition">
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
+    </div>
   </div>
 
   <%# Mobile dropdown panel %>

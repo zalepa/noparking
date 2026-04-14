@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
 
   resources :issues, only: %i[index new create]
+  resources :notifications, only: %i[index update] do
+    collection { post :read_all }
+  end
 
   namespace :admin do
     root to: "dashboards#show"

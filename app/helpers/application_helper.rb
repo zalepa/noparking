@@ -9,4 +9,9 @@ module ApplicationHelper
   def t(key, **options)
     super(key, app_name: app_name, **options)
   end
+
+  def unread_notifications_count
+    return 0 unless Current.user
+    @_unread_notifications_count ||= Current.user.notifications.unread.count
+  end
 end

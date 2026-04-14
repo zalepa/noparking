@@ -3,6 +3,9 @@ class Issue < ApplicationRecord
   belongs_to :category
   belongs_to :assigned_to, class_name: "User", optional: true
   has_one :resolution, dependent: :destroy
+  has_many :notifications, dependent: :delete_all
+
+  after_update_commit :notify_assigned, if: :saved_change_to_assigned_to_id?
 
   has_one_attached :photo
 
@@ -67,6 +70,12 @@ class Issue < ApplicationRecord
   end
 
   private
+
+  def notify_assigned
+    return unless assigned_to_id.present?
+    notifications.create!(user: user, kind: "assigned")
+    Notification.broadcast_refresh_for(user)
+  end
 
   MAX_PHOTO_BYTES = 10.megabytes
   ALLOWED_PHOTO_TYPES = %w[image/jpeg image/jpg image/png image/webp image/heic image/heif].freeze

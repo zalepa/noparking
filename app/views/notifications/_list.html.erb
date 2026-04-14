@@ -1,0 +1,41 @@
+<%
+  user ||= Current.user
+  notifications = user.notifications.includes(:issue).newest_first.limit(50)
+  has_unread = notifications.any? { |n| n.read_at.nil? }
+%>
+<div id="notifications-list">
+  <div class="flex items-center justify-end mb-3 min-h-[2.25rem]">
+    <% if has_unread %>
+      <%= button_to "Mark all read", read_all_notifications_path, method: :post,
+            form: { class: "inline" },
+            class: "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <% if notifications.any? %>
+    <ul class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-100">
+      <% notifications.each do |n| %>
+        <li class="<%= 'bg-blue-50/60' if n.read_at.nil? %>">
+          <%= button_to notification_path(n), method: :patch,
+                form: { class: "block" },
+                class: "block w-full text-left px-5 py-4 hover:bg-gray-50 cursor-pointer bg-transparent border-0" do %>
+            <div class="flex items-start gap-3">
+              <span class="mt-1.5 shrink-0 w-2 h-2 rounded-full <%= n.read_at.nil? ? 'bg-blue-600' : 'bg-transparent' %>"></span>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold text-gray-900"><%= n.title %></p>
+                <p class="text-sm text-gray-600 truncate">
+                  <%= n.issue.title.presence || n.issue.category.name %>
+                </p>
+                <p class="mt-1 text-xs text-gray-500"><%= time_ago_in_words(n.created_at) %> ago</p>
+              </div>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center text-sm text-gray-600">
+      You have no notifications.
+    </div>
+  <% end %>
+</div>

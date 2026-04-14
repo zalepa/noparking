@@ -1,0 +1,66 @@
+<%
+  user ||= Current.user
+  count = user.notifications.unread.count
+  preview = user.notifications.includes(:issue).newest_first.limit(8)
+%>
+<div id="notifications-bell" class="relative" data-controller="menu">
+  <button type="button"
+          data-menu-target="button"
+          data-action="menu#toggle"
+          aria-label="Notifications"
+          aria-expanded="false"
+          class="relative inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-50 transition">
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+    </svg>
+    <% if count > 0 %>
+      <span class="absolute top-1 right-1 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-semibold min-w-[1.125rem] h-[1.125rem] px-1"><%= count %></span>
+    <% end %>
+  </button>
+
+  <div data-menu-target="panel"
+       class="hidden absolute right-0 mt-2 w-80 rounded-xl bg-white shadow-xl border border-gray-200 z-50 overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      <span class="text-sm font-semibold text-gray-900">Notifications</span>
+      <% if count > 0 %>
+        <%= button_to "Mark all read", read_all_notifications_path, method: :post,
+              form: { class: "inline" },
+              class: "text-xs font-medium text-blue-600 hover:text-blue-700 cursor-pointer bg-transparent border-0 p-0" %>
+      <% end %>
+    </div>
+
+    <% if preview.any? %>
+      <ul class="max-h-96 overflow-y-auto divide-y divide-gray-100">
+        <% preview.each do |n| %>
+          <li class="<%= 'bg-blue-50/60' if n.read_at.nil? %>">
+            <%= button_to notification_path(n), method: :patch,
+                  form: { class: "block w-full" },
+                  class: "block w-full text-left px-4 py-3 hover:bg-gray-50 cursor-pointer bg-transparent border-0" do %>
+              <div class="flex items-start gap-2">
+                <% if n.read_at.nil? %>
+                  <span class="mt-1.5 shrink-0 w-2 h-2 rounded-full bg-blue-600"></span>
+                <% else %>
+                  <span class="mt-1.5 shrink-0 w-2 h-2 rounded-full bg-transparent"></span>
+                <% end %>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900 truncate"><%= n.title %></p>
+                  <p class="text-xs text-gray-600 truncate">
+                    <%= n.issue.title.presence || n.issue.category.name %>
+                  </p>
+                  <p class="mt-0.5 text-xs text-gray-500"><%= time_ago_in_words(n.created_at) %> ago</p>
+                </div>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div class="px-4 py-2 border-t border-gray-100 text-right">
+        <%= link_to "View all", notifications_path, class: "text-xs font-semibold text-blue-600 hover:text-blue-700" %>
+      </div>
+    <% else %>
+      <div class="px-4 py-8 text-center text-sm text-gray-500">
+        No notifications yet.
+      </div>
+    <% end %>
+  </div>
+</div>

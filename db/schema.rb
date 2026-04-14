@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_190000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -65,6 +65,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_180000) do
     t.index ["category_id"], name: "index_issues_on_category_id"
     t.index ["user_id", "created_at"], name: "index_issues_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_issues_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "issue_id", null: false
+    t.string "kind", null: false
+    t.datetime "read_at"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["issue_id"], name: "index_notifications_on_issue_id"
+    t.index ["user_id", "created_at"], name: "index_notifications_on_user_id_and_created_at"
+    t.index ["user_id", "read_at"], name: "index_notifications_on_user_id_and_read_at"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "officer_locations", force: :cascade do |t|
@@ -126,6 +139,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_180000) do
   add_foreign_key "issues", "categories"
   add_foreign_key "issues", "users"
   add_foreign_key "issues", "users", column: "assigned_to_id"
+  add_foreign_key "notifications", "issues"
+  add_foreign_key "notifications", "users"
   add_foreign_key "officer_locations", "users"
   add_foreign_key "resolutions", "issues"
   add_foreign_key "resolutions", "resolution_types"
