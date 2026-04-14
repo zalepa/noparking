@@ -1,31 +1,85 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  pages:
+    home:
+      title: "ParkSafe — Community Parking Enforcement"
+      nav:
+        how_it_works: "How It Works"
+        features: "Features"
+        roles: "User Roles"
+      hero:
+        badge: "Open-source municipal platform"
+        heading_html: "Parking enforcement,<br><span class=\"text-blue-600\">powered by community</span>"
+        description_html: "ParkSafe connects residents with enforcement officers in real time. Report violations, track responses, and help keep your neighborhood safe&mdash;all from your phone."
+        cta_primary: "See how it works"
+        cta_github: "View on GitHub"
+      how_it_works:
+        heading: "How it works"
+        subheading: "Three simple steps from report to resolution."
+        steps:
+          - title: "Resident reports"
+            description: "Snap a photo, pick a category, and submit. The report is timestamped and geotagged automatically."
+          - title: "Officer notified"
+            description: "Nearby enforcement officers receive the report with directions. They confirm or dismiss on-site."
+          - title: "Feedback loop"
+            description: "The resident is updated on the outcome and can rate the response. Managers track performance."
+      features:
+        heading: "Built for municipalities"
+        subheading: "Everything you need to modernize parking enforcement, out of the box."
+        items:
+          - key: "photo_evidence"
+            title: "Photo evidence"
+            description: "Residents attach photos directly from their phone. Every report includes visual proof."
+          - key: "location_dispatch"
+            title: "Location-aware dispatch"
+            description: "Officers are matched to nearby violations using real-time GPS. Faster response, less windshield time."
+          - key: "dashboards"
+            title: "Performance dashboards"
+            description: "Managers track KPIs, response times, and officer activity. Anonymized data for public transparency."
+          - key: "role_access"
+            title: "Role-based access"
+            description: "Four distinct user roles with scoped permissions: residents, officers, managers, and site admins."
+          - key: "notifications"
+            title: "Real-time notifications"
+            description: "Push notifications keep officers and residents informed as violations move through the workflow."
+          - key: "open_source"
+            title: "Open source & customizable"
+            description: "Clone, configure, and deploy. Tailor categories, branding, and workflows to your municipality's needs."
+      roles:
+        heading: "Designed for every stakeholder"
+        subheading: "Each role gets a purpose-built experience."
+        items:
+          - key: "residents"
+            name: "Residents"
+            capabilities:
+              - "Report violations with photos and notes"
+              - "Track report status in real time"
+              - "Rate enforcement responses"
+              - "View community metrics"
+          - key: "officers"
+            name: "Enforcement Officers"
+            capabilities:
+              - "Receive proximity-based assignments"
+              - "Get turn-by-turn directions"
+              - "Confirm or dismiss violations on-site"
+              - "Add notes and documentation"
+          - key: "managers"
+            name: "Managers"
+            capabilities:
+              - "Oversee officer locations and activity"
+              - "Define schedules and KPIs"
+              - "Manage enforcement team accounts"
+              - "Access all violation data"
+          - key: "admins"
+            name: "Site Administrators"
+            capabilities:
+              - "Configure violation categories"
+              - "Manage manager accounts"
+              - "Monitor platform performance"
+              - "Customize system settings"
+      cta:
+        heading: "Ready to get started?"
+        description: "ParkSafe is free and open source. Clone the repository, follow the setup guide, and have your municipal parking enforcement platform running in minutes."
+        clone: "Clone the repo"
+        docs: "Read the docs"
+      footer:
+        tagline: "Open-source parking enforcement for municipalities."
