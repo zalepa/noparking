@@ -1,0 +1,14 @@
+summons:
+  name: Summons issued
+  position: 1
+  active: true
+
+not_present:
+  name: Violation no longer present
+  position: 2
+  active: true
+
+not_illegal:
+  name: Not illegal
+  position: 3
+  active: true

@@ -2,51 +2,42 @@
 
 <main class="min-h-[calc(100vh-4rem)] py-8 sm:py-12 px-4 sm:px-6 pb-32">
   <div class="max-w-3xl mx-auto">
-    <header class="mb-8">
+    <header class="mb-6">
       <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900"><%= t(".title") %></h1>
-      <% if Current.user&.display_name.present? %>
-        <p class="mt-2 text-sm text-gray-600">Signed in as <span class="font-medium text-gray-900"><%= Current.user.display_name %></span></p>
-      <% end %>
     </header>
+
+    <%= form_with url: issues_path, method: :get, local: true, data: { controller: "autosubmit" },
+          class: "mb-6 flex flex-wrap items-center gap-3" do |form| %>
+      <div class="flex items-center gap-2">
+        <%= form.label :status, "Status", class: "text-sm font-medium text-gray-700" %>
+        <%= form.select :status,
+              [["All", "all"], ["Open", "open"], ["Assigned", "assigned"], ["Resolved", "resolved"]],
+              { selected: @status },
+              onchange: "this.form.requestSubmit()",
+              class: "rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= form.label :sort, "Sort", class: "text-sm font-medium text-gray-700" %>
+        <%= form.select :sort,
+              [["Newest first", "newest"], ["Oldest first", "oldest"]],
+              { selected: @sort },
+              onchange: "this.form.requestSubmit()",
+              class: "rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+
+      <% if @status != "all" || @sort != "newest" %>
+        <%= link_to "Clear", issues_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
+      <% end %>
+    <% end %>
 
     <% if @issues.any? %>
       <ul class="space-y-4">
         <% @issues.each do |issue| %>
-          <li class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div class="flex flex-col sm:flex-row">
-              <% if issue.photo.attached? %>
-                <div class="sm:w-40 sm:h-40 w-full h-48 bg-gray-100 shrink-0">
-                  <%= image_tag issue.photo.variant(resize_to_fill: [ 400, 400 ]),
-                        class: "w-full h-full object-cover", alt: issue.title %>
-                </div>
-              <% end %>
-              <div class="p-5 sm:p-6 flex-1">
-                <div class="flex items-start justify-between gap-3">
-                  <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
-                    <%= issue.category.name %>
-                  </span>
-                  <time class="text-xs text-gray-500 shrink-0" datetime="<%= issue.created_at.iso8601 %>">
-                    <%= t(".submitted_on", date: l(issue.created_at, format: :long)) %>
-                  </time>
-                </div>
-                <h2 class="mt-2 text-lg font-semibold text-gray-900"><%= issue.title.presence || issue.category.name %></h2>
-                <% if issue.address.present? %>
-                  <p class="mt-1 text-sm text-gray-600 flex items-start gap-1.5">
-                    <svg class="w-4 h-4 mt-0.5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span><%= issue.address %></span>
-                  </p>
-                <% end %>
-                <% if issue.notes.present? %>
-                  <p class="mt-3 text-sm text-gray-700 whitespace-pre-line"><%= issue.notes %></p>
-                <% end %>
-              </div>
-            </div>
-          </li>
+          <%= render "issue_card", issue: issue %>
         <% end %>
       </ul>
-    <% else %>
+    <% elsif @status == "all" %>
       <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 sm:p-12 text-center">
         <div class="mx-auto w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mb-5">
           <svg class="w-7 h-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -55,6 +46,10 @@
         </div>
         <h2 class="text-xl font-semibold text-gray-900"><%= t(".empty_title") %></h2>
         <p class="mt-3 text-gray-600 max-w-md mx-auto leading-relaxed"><%= t(".empty_body") %></p>
+      </div>
+    <% else %>
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center text-sm text-gray-600">
+        No reports match this filter.
       </div>
     <% end %>
   </div>

@@ -1,16 +1,14 @@
 <%
   nav_items = [
-    [admin_root_path,        "Dashboard",  controller_name == "dashboards"],
-    [admin_managers_path,    "Managers",   controller_name == "managers"],
-    [admin_categories_path,  "Categories", controller_name == "categories"],
-    [admin_resolution_types_path, "Resolution types", controller_name == "resolution_types"]
+    [officer_root_path,   "On shift", controller_name == "dashboards"],
+    [officer_issues_path, "All reports", controller_name == "issues"]
   ]
 %>
 <aside class="hidden lg:flex lg:flex-col fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 z-40">
   <div class="h-16 flex items-center px-6 border-b border-gray-200">
-    <%= link_to admin_root_path, class: "flex items-center gap-2" do %>
+    <%= link_to officer_root_path, class: "flex items-center gap-2" do %>
       <%= render "pages/logo", size: "w-7 h-7" %>
-      <span class="font-semibold tracking-tight"><%= app_name %> <span class="text-gray-400 font-normal">Admin</span></span>
+      <span class="font-semibold tracking-tight"><%= app_name %> <span class="text-gray-400 font-normal">Officer</span></span>
     <% end %>
   </div>
   <nav class="flex-1 px-3 py-6 space-y-1">
@@ -27,11 +25,10 @@
   </div>
 </aside>
 
-<%# Mobile top bar %>
 <header class="lg:hidden sticky top-0 z-40 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between">
-  <%= link_to admin_root_path, class: "flex items-center gap-2" do %>
+  <%= link_to officer_root_path, class: "flex items-center gap-2" do %>
     <%= render "pages/logo", size: "w-6 h-6" %>
-    <span class="font-semibold"><%= app_name %> Admin</span>
+    <span class="font-semibold"><%= app_name %> Officer</span>
   <% end %>
   <%= link_to "Site", root_path, class: "text-sm text-gray-700" %>
 </header>

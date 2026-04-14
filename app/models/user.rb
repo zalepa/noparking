@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :issues, dependent: :destroy
+  has_many :officer_locations, dependent: :delete_all
 
   # Role hierarchy. Only `regular` accounts can self-register; all others
   # are provisioned by a privileged user (site admins create managers;

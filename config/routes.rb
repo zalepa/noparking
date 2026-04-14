@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resource  :dashboard, only: :show
     resources :managers
     resources :categories, except: :show
+    resources :resolution_types, except: :show
   end
 
   namespace :manager do
@@ -18,6 +19,16 @@ Rails.application.routes.draw do
     resource  :dashboard, only: :show
     resources :officers
     resources :issues, only: %i[index show]
+  end
+
+  namespace :officer do
+    root to: "dashboards#show"
+    resource  :dashboard, only: :show
+    resources :issues, only: %i[index show] do
+      resource :resolution, only: %i[new create]
+      resource :assignment, only: %i[create destroy]
+    end
+    resources :locations, only: :create
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

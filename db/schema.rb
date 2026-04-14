@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_180000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -51,6 +51,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_150000) do
 
   create_table "issues", force: :cascade do |t|
     t.string "address"
+    t.datetime "assigned_at"
+    t.integer "assigned_to_id"
     t.integer "category_id", null: false
     t.datetime "created_at", null: false
     t.decimal "latitude", precision: 10, scale: 6, null: false
@@ -59,9 +61,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_150000) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["assigned_to_id"], name: "index_issues_on_assigned_to_id"
     t.index ["category_id"], name: "index_issues_on_category_id"
     t.index ["user_id", "created_at"], name: "index_issues_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_issues_on_user_id"
+  end
+
+  create_table "officer_locations", force: :cascade do |t|
+    t.float "accuracy_meters"
+    t.datetime "created_at", null: false
+    t.decimal "latitude", precision: 10, scale: 6, null: false
+    t.decimal "longitude", precision: 10, scale: 6, null: false
+    t.datetime "recorded_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "recorded_at"], name: "index_officer_locations_on_user_id_and_recorded_at"
+    t.index ["user_id"], name: "index_officer_locations_on_user_id"
+  end
+
+  create_table "resolution_types", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index "LOWER(name)", name: "index_resolution_types_on_LOWER_name", unique: true
+  end
+
+  create_table "resolutions", force: :cascade do |t|
+    t.string "citation_number"
+    t.datetime "created_at", null: false
+    t.integer "issue_id", null: false
+    t.text "note"
+    t.integer "resolution_type_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["issue_id"], name: "index_resolutions_on_issue_id", unique: true
+    t.index ["resolution_type_id"], name: "index_resolutions_on_resolution_type_id"
+    t.index ["user_id"], name: "index_resolutions_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -89,5 +125,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_150000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "issues", "categories"
   add_foreign_key "issues", "users"
+  add_foreign_key "issues", "users", column: "assigned_to_id"
+  add_foreign_key "officer_locations", "users"
+  add_foreign_key "resolutions", "issues"
+  add_foreign_key "resolutions", "resolution_types"
+  add_foreign_key "resolutions", "users"
   add_foreign_key "sessions", "users"
 end

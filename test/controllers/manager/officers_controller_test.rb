@@ -19,11 +19,11 @@ class Manager::OfficersControllerTest < ActionDispatch::IntegrationTest
   test "creating an officer assigns the enforcement role" do
     assert_difference -> { User.enforcement.count }, 1 do
       post manager_officers_path, params: {
-        user: { email: "officer@example.com", password: "correct horse battery staple", password_confirmation: "correct horse battery staple" }
+        user: { email: "new-officer@example.com", password: "correct horse battery staple", password_confirmation: "correct horse battery staple" }
       }
     end
     assert_redirected_to manager_officers_path
-    assert User.find_by(email: "officer@example.com").enforcement?
+    assert User.find_by(email: "new-officer@example.com").enforcement?
   end
 
   test "updating without a password preserves the digest" do

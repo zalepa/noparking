@@ -23,13 +23,50 @@
 </div>
 
 <div class="grid md:grid-cols-2 gap-6 mb-10">
-  <%# Officer locations — depends on officer mobile workflow %>
-  <section class="bg-white rounded-2xl border border-gray-200 p-6">
-    <h2 class="text-lg font-semibold text-gray-900">Officer locations</h2>
-    <p class="mt-1 text-sm text-gray-600">Real-time map of on-shift officers.</p>
-    <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
-      Available when the officer mobile app ships.
+  <%# Officer locations — latest known position per officer %>
+  <section class="bg-white rounded-2xl border border-gray-200 p-6"
+           data-controller="officer-map">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Officer locations</h2>
+        <p class="mt-1 text-sm text-gray-600">Latest known position per officer (last 24h).</p>
+      </div>
+      <span class="text-xs text-gray-500"><%= @officer_locations.size %> on shift</span>
     </div>
+
+    <% if @officer_locations.any? %>
+      <div data-officer-map-target="map" class="mt-4 h-64 rounded-lg border border-gray-200 overflow-hidden"></div>
+      <ul class="mt-4 divide-y divide-gray-100 text-sm">
+        <% @officer_locations.each do |loc| %>
+          <%
+            minutes_ago = ((Time.current - loc.recorded_at) / 60).round
+            on_shift = minutes_ago <= 30
+          %>
+          <li class="py-2 flex items-center justify-between gap-3"
+              data-officer-map-target="officer"
+              data-lat="<%= loc.latitude %>"
+              data-lng="<%= loc.longitude %>"
+              data-name="<%= loc.user.display_name %>"
+              data-ago="<%= time_ago_in_words(loc.recorded_at) %>">
+            <div class="min-w-0">
+              <p class="font-medium text-gray-900 truncate"><%= loc.user.display_name %></p>
+              <p class="text-xs text-gray-500">
+                <%= number_with_precision(loc.latitude, precision: 4) %>,
+                <%= number_with_precision(loc.longitude, precision: 4) %>
+              </p>
+            </div>
+            <span class="shrink-0 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium <%= on_shift ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600' %>">
+              <span class="w-1.5 h-1.5 rounded-full <%= on_shift ? 'bg-green-500' : 'bg-gray-400' %>"></span>
+              <%= time_ago_in_words(loc.recorded_at) %> ago
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center text-sm text-gray-500">
+        No officers have reported a location in the last 24 hours.
+      </div>
+    <% end %>
   </section>
 
   <%# Schedules — placeholder %>

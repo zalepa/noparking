@@ -21,3 +21,8 @@ manager:
   email: manager@example.com
   password_digest: <%= password_digest %>
   role: 2
+
+officer:
+  email: officer@example.com
+  password_digest: <%= password_digest %>
+  role: 1

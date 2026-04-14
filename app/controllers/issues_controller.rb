@@ -1,8 +1,22 @@
 class IssuesController < ApplicationController
   before_action :set_categories, only: %i[new create]
 
+  STATUS_FILTERS = %w[all open assigned resolved].freeze
+  SORT_OPTIONS   = %w[newest oldest].freeze
+
   def index
-    @issues = Current.user.issues.with_attached_photo.includes(:category).newest_first
+    @status = STATUS_FILTERS.include?(params[:status]) ? params[:status] : "all"
+    @sort   = SORT_OPTIONS.include?(params[:sort])     ? params[:sort]   : "newest"
+
+    scope = Current.user.issues.with_attached_photo.includes(:category, resolution: :resolution_type)
+    scope = case @status
+    when "open"     then scope.open
+    when "assigned" then scope.assigned
+    when "resolved" then scope.resolved
+    else scope
+    end
+    scope = scope.order(created_at: (@sort == "oldest" ? :asc : :desc))
+    @issues = scope
   end
 
   def new

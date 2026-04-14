@@ -1,6 +1,8 @@
 class Issue < ApplicationRecord
   belongs_to :user
   belongs_to :category
+  belongs_to :assigned_to, class_name: "User", optional: true
+  has_one :resolution, dependent: :destroy
 
   has_one_attached :photo
 
@@ -12,6 +14,38 @@ class Issue < ApplicationRecord
   validate  :photo_size
 
   scope :newest_first, -> { order(created_at: :desc) }
+  scope :unresolved, -> { where.missing(:resolution) }
+  scope :open,     -> { unresolved.where(assigned_to_id: nil) }
+  scope :assigned, -> { unresolved.where.not(assigned_to_id: nil) }
+  scope :resolved, -> { joins(:resolution) }
+
+  def resolved?
+    resolution.present?
+  end
+
+  def assigned?
+    assigned_to_id.present? && !resolved?
+  end
+
+  def state
+    return :resolved if resolved?
+    return :assigned if assigned_to_id.present?
+    :open
+  end
+
+  EARTH_RADIUS_MILES = 3_958.8
+
+  # Great-circle distance (Haversine) in miles between this issue and a point.
+  # Returns Float::INFINITY if the issue is missing coordinates so it sorts last.
+  def distance_miles_from(lat, lon)
+    return Float::INFINITY if latitude.nil? || longitude.nil?
+    rad = Math::PI / 180
+    dlat = (latitude - lat) * rad
+    dlon = (longitude - lon) * rad
+    a = Math.sin(dlat / 2)**2 +
+        Math.cos(lat * rad) * Math.cos(latitude * rad) * Math.sin(dlon / 2)**2
+    2 * EARTH_RADIUS_MILES * Math.asin(Math.sqrt(a))
+  end
 
   # Accept a data URL ("data:image/jpeg;base64,...") captured from the client-side
   # camera and attach it as the photo. Safe no-op when the value is blank.

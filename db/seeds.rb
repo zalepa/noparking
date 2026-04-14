@@ -23,3 +23,19 @@ CATEGORY_NAMES.each_with_index do |name, index|
 end
 
 puts "Seeded #{Category.count} categories."
+
+# Seed the default resolution types officers can use to close out an issue.
+RESOLUTION_TYPE_NAMES = [
+  "Summons issued",
+  "Violation no longer present",
+  "Not illegal"
+].freeze
+
+RESOLUTION_TYPE_NAMES.each_with_index do |name, index|
+  rt = ResolutionType.find_or_initialize_by(name: name)
+  rt.position = index
+  rt.active = true
+  rt.save!
+end
+
+puts "Seeded #{ResolutionType.count} resolution types."
