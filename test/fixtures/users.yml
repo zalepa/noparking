@@ -11,3 +11,8 @@ two:
 phone_only:
   phone: "5551112222"
   password_digest: <%= password_digest %>
+
+admin:
+  email: admin@example.com
+  password_digest: <%= password_digest %>
+  role: 3

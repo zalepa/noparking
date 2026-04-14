@@ -1,0 +1,10 @@
+<% content_for(:title, "New category") %>
+
+<div class="max-w-xl">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900">New category</h1>
+  </header>
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+    <%= render "form", category: @category %>
+  </div>
+</div>

@@ -35,7 +35,8 @@ module Authentication
     end
 
     def after_authentication_url
-      session.delete(:return_to_after_authenticating) || issues_url
+      return session.delete(:return_to_after_authenticating) if session[:return_to_after_authenticating]
+      Current.user&.site_admin? ? admin_root_url : issues_url
     end
 
     def start_new_session_for(user)

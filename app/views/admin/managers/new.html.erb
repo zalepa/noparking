@@ -1,0 +1,11 @@
+<% content_for(:title, "New manager") %>
+
+<div class="max-w-xl">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900">New manager</h1>
+    <p class="mt-2 text-sm text-gray-600">Share the credentials with them directly. They can change the password after first login.</p>
+  </header>
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+    <%= render "form", manager: @manager %>
+  </div>
+</div>

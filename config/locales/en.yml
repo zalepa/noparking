@@ -11,6 +11,7 @@ en:
     sign_out: "Sign out"
     issues: "My Issues"
     profile: "Profile"
+    admin: "Admin"
 
   registrations:
     new:

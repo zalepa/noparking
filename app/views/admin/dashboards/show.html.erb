@@ -1,0 +1,50 @@
+<% content_for(:title, "Dashboard") %>
+
+<header class="mb-8">
+  <h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+  <p class="mt-2 text-sm text-gray-600">Anonymized site activity and team composition.</p>
+</header>
+
+<%
+  cards = [
+    ["Residents",         @stats[:residents]],
+    ["Enforcement",       @stats[:enforcement]],
+    ["Managers",          @stats[:managers]],
+    ["Site admins",       @stats[:site_admins]],
+    ["Categories",        @stats[:categories]],
+    ["Total reports",     @stats[:issues_total]],
+    ["Reports (24h)",     @stats[:issues_24h]],
+    ["Reports (7d)",      @stats[:issues_7d]]
+  ]
+%>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+  <% cards.each do |label, value| %>
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-500"><%= label %></p>
+      <p class="mt-2 text-3xl font-bold text-gray-900"><%= number_with_delimiter(value) %></p>
+    </div>
+  <% end %>
+</div>
+
+<section class="bg-white rounded-2xl border border-gray-200">
+  <header class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-gray-900">Recent reports</h2>
+  </header>
+  <% if @recent_issues.any? %>
+    <ul class="divide-y divide-gray-100">
+      <% @recent_issues.each do |issue| %>
+        <li class="px-5 py-3 flex items-center justify-between gap-3 text-sm">
+          <div class="min-w-0">
+            <p class="font-medium text-gray-900 truncate"><%= issue.title.presence || issue.category.name %></p>
+            <p class="text-gray-500 text-xs truncate"><%= issue.category.name %> · <%= issue.address.presence || "no address" %></p>
+          </div>
+          <time class="text-gray-500 text-xs shrink-0" datetime="<%= issue.created_at.iso8601 %>">
+            <%= time_ago_in_words(issue.created_at) %> ago
+          </time>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="px-5 py-8 text-center text-sm text-gray-500">No reports yet.</p>
+  <% end %>
+</section>

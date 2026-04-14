@@ -1,0 +1,9 @@
+crosswalk:
+  name: Parking in crosswalk
+  position: 1
+  active: true
+
+hydrant:
+  name: Parking in front of fire hydrant
+  position: 2
+  active: true

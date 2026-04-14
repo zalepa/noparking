@@ -1,0 +1,53 @@
+<%= form_with model: [:admin, manager], local: true, class: "space-y-5" do |form| %>
+  <% if manager.errors.any? %>
+    <div role="alert" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      <p class="font-semibold mb-1">Please fix the following:</p>
+      <ul class="list-disc list-inside space-y-0.5">
+        <% manager.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :email, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.email_field :email,
+          autocomplete: "off",
+          class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+  </div>
+
+  <div>
+    <%= form.label :phone, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.telephone_field :phone,
+          autocomplete: "off",
+          class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    <p class="mt-1.5 text-xs text-gray-500">Provide email, phone, or both.</p>
+  </div>
+
+  <div>
+    <%= form.label :password, manager.persisted? ? "New password (leave blank to keep current)" : "Password",
+          class: "block text-sm font-medium text-gray-700" %>
+    <%= form.password_field :password,
+          autocomplete: "new-password",
+          minlength: User::PASSWORD_MIN_LENGTH,
+          maxlength: 72,
+          required: !manager.persisted?,
+          class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    <p class="mt-1.5 text-xs text-gray-500">Minimum <%= User::PASSWORD_MIN_LENGTH %> characters.</p>
+  </div>
+
+  <div>
+    <%= form.label :password_confirmation, "Confirm password", class: "block text-sm font-medium text-gray-700" %>
+    <%= form.password_field :password_confirmation,
+          autocomplete: "new-password",
+          maxlength: 72,
+          class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-2">
+    <%= link_to "Cancel", admin_managers_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
+    <%= form.submit (manager.persisted? ? "Save changes" : "Create manager"),
+          class: "rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 cursor-pointer" %>
+  </div>
+<% end %>

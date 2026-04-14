@@ -3,6 +3,11 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :issues, dependent: :destroy
 
+  # Role hierarchy. Only `regular` accounts can self-register; all others
+  # are provisioned by a privileged user (site admins create managers;
+  # managers create enforcement users in a later milestone).
+  enum :role, { regular: 0, enforcement: 1, manager: 2, site_admin: 3 }, default: :regular
+
   EMAIL_REGEX = URI::MailTo::EMAIL_REGEXP
   PASSWORD_MIN_LENGTH = 12
   PHONE_MIN_DIGITS = 10
