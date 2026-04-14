@@ -66,6 +66,17 @@
             <svg class="w-10 h-10 mb-2 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M15 15v2a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h2m4 0h6a2 2 0 012 2v6"/></svg>
             <%= t(".photo_skipped") %>
           </div>
+          <button type="button"
+                  data-camera-target="nativePlaceholder"
+                  data-action="camera#capture"
+                  class="absolute inset-0 flex flex-col items-center justify-center text-white bg-gray-900 hidden cursor-pointer hover:bg-gray-800 transition">
+            <svg class="w-14 h-14 mb-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h2.93a2 2 0 001.664-.89l.82-1.22A2 2 0 0112.08 4h-.16a2 2 0 011.664.89l.82 1.22A2 2 0 0016.07 7H19a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 17a4 4 0 100-8 4 4 0 000 8z"/>
+            </svg>
+            <span class="text-base font-semibold">Tap to open camera</span>
+            <span class="mt-1 text-xs text-gray-400">Uses your phone's native camera</span>
+          </button>
         </div>
 
         <canvas data-camera-target="canvas" class="hidden"></canvas>
@@ -73,6 +84,11 @@
               accept: "image/*",
               class: "hidden",
               data: { camera_target: "fileInput", action: "change->camera#fileSelected" } %>
+        <%= file_field_tag :photo_file_camera,
+              accept: "image/*",
+              capture: "environment",
+              class: "hidden",
+              data: { camera_target: "cameraInput", action: "change->camera#fileSelected" } %>
         <%= hidden_field_tag "issue[photo_data]", nil, data: { camera_target: "dataField" } %>
 
         <%# Live-state buttons %>

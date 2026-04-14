@@ -14,7 +14,9 @@ export default class extends Controller {
     "canvas",
     "error",
     "skipped",
+    "nativePlaceholder",
     "fileInput",
+    "cameraInput",
     "dataField",
     "liveActions",
     "capturedActions",
@@ -34,7 +36,18 @@ export default class extends Controller {
     this.stopCamera()
   }
 
+  // On mobile, defer to the OS camera app. It has zoom, flash, HDR, focus
+  // controls — all the things a pinch-zoom-hijacking in-page viewport doesn't.
+  // On desktop, use getUserMedia for a live webcam preview.
+  isMobile() {
+    return window.matchMedia("(hover: none) and (pointer: coarse)").matches
+  }
+
   async startCamera() {
+    if (this.isMobile()) {
+      this.useNativeCamera()
+      return
+    }
     if (!navigator.mediaDevices?.getUserMedia) {
       this.showFallback()
       return
@@ -52,6 +65,12 @@ export default class extends Controller {
     }
   }
 
+  useNativeCamera() {
+    this.nativeMode = true
+    this.videoTarget.classList.add("hidden")
+    if (this.hasNativePlaceholderTarget) this.nativePlaceholderTarget.classList.remove("hidden")
+  }
+
   stopCamera() {
     if (this.stream) {
       this.stream.getTracks().forEach((t) => t.stop())
@@ -67,6 +86,10 @@ export default class extends Controller {
   }
 
   capture() {
+    if (this.nativeMode || !this.stream) {
+      if (this.hasCameraInputTarget) this.cameraInputTarget.click()
+      return
+    }
     if (!this.videoTarget.videoWidth) return
     const { videoWidth: vw, videoHeight: vh } = this.videoTarget
     const scale = Math.min(1, this.MAX_DIMENSION / Math.max(vw, vh))
@@ -87,11 +110,16 @@ export default class extends Controller {
     this.dataFieldTarget.value = ""
     this.previewTarget.src = ""
     this.previewTarget.classList.add("hidden")
-    this.videoTarget.classList.remove("hidden")
     if (this.hasSkippedTarget) this.skippedTarget.classList.add("hidden")
     this.liveActionsTarget.classList.remove("hidden")
     this.capturedActionsTarget.classList.add("hidden")
-    if (!this.stream) this.startCamera()
+    if (this.nativeMode) {
+      if (this.hasNativePlaceholderTarget) this.nativePlaceholderTarget.classList.remove("hidden")
+      if (this.hasCameraInputTarget) this.cameraInputTarget.click()
+    } else {
+      this.videoTarget.classList.remove("hidden")
+      if (!this.stream) this.startCamera()
+    }
   }
 
   skip() {
@@ -139,6 +167,7 @@ export default class extends Controller {
     if (this.hasLiveActionsTarget) this.liveActionsTarget.classList.add("hidden")
     if (this.hasFallbackActionsTarget) this.fallbackActionsTarget.classList.add("hidden")
     if (this.hasCapturedActionsTarget) this.capturedActionsTarget.classList.remove("hidden")
+    if (this.hasNativePlaceholderTarget) this.nativePlaceholderTarget.classList.add("hidden")
     this.stopCamera()
   }
 }
