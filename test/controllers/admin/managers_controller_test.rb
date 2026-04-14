@@ -3,6 +3,19 @@ require "test_helper"
 class Admin::ManagersControllerTest < ActionDispatch::IntegrationTest
   setup { sign_in_as users(:admin) }
 
+  test "new renders the form" do
+    get new_admin_manager_path
+    assert_response :success
+    assert_select "form[action=?]", admin_managers_path
+  end
+
+  test "edit renders the form" do
+    manager = User.create!(email: "edit-me@example.com", password: "correct horse battery staple", role: :manager)
+    get edit_admin_manager_path(manager)
+    assert_response :success
+    assert_select "form[action=?]", admin_manager_path(manager)
+  end
+
   test "index lists manager users" do
     User.create!(email: "mgr@example.com", password: "correct horse battery staple", role: :manager)
     get admin_managers_path

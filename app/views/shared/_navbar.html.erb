@@ -28,6 +28,9 @@
         <% if Current.user&.site_admin? %>
           <%= link_to t("nav.admin"), admin_root_path,
                 class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-blue-700 hover:text-blue-800 hover:bg-blue-50 transition" %>
+        <% elsif Current.user&.manager? %>
+          <%= link_to t("nav.manager"), manager_root_path,
+                class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-blue-700 hover:text-blue-800 hover:bg-blue-50 transition" %>
         <% end %>
         <%= link_to t("nav.profile"), edit_profile_path,
               class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>

@@ -12,6 +12,7 @@ en:
     issues: "My Issues"
     profile: "Profile"
     admin: "Admin"
+    manager: "Manager"
 
   registrations:
     new:

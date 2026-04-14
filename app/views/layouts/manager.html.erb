@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= [content_for(:title), "Manager", app_name].compact.join(" · ") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased">
+    <%= render "manager/shared/sidebar" %>
+    <div class="lg:pl-64">
+      <%= render "shared/flash" %>
+      <main class="px-4 sm:px-8 py-8">
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

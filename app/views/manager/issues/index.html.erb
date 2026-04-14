@@ -1,0 +1,58 @@
+<% content_for(:title, "Reports") %>
+
+<header class="mb-6">
+  <h1 class="text-3xl font-bold tracking-tight text-gray-900">Reports</h1>
+  <p class="mt-2 text-sm text-gray-600">All violation reports submitted by residents.</p>
+</header>
+
+<%= form_with url: manager_issues_path, method: :get, local: true,
+      class: "mb-6 flex flex-wrap items-center gap-3 text-sm" do %>
+  <label for="category_id" class="font-medium text-gray-700">Category</label>
+  <%= select_tag :category_id,
+        options_from_collection_for_select(@categories, :id, :name, params[:category_id]),
+        include_blank: "All",
+        onchange: "this.form.requestSubmit()",
+        class: "rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500" %>
+  <% if params[:category_id].present? %>
+    <%= link_to "Clear", manager_issues_path, class: "text-gray-500 hover:text-gray-700" %>
+  <% end %>
+<% end %>
+
+<div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+  <% if @issues.any? %>
+    <ul class="divide-y divide-gray-100">
+      <% @issues.each do |issue| %>
+        <li>
+          <%= link_to manager_issue_path(issue), class: "block px-5 py-4 hover:bg-gray-50 transition" do %>
+            <div class="flex items-start gap-4">
+              <% if issue.photo.attached? %>
+                <%= image_tag issue.photo.variant(resize_to_fill: [ 160, 160 ]),
+                      class: "w-20 h-20 rounded-lg object-cover shrink-0", alt: "" %>
+              <% else %>
+                <div class="w-20 h-20 rounded-lg bg-gray-100 shrink-0 flex items-center justify-center text-xs text-gray-400">No photo</div>
+              <% end %>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-3">
+                  <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                    <%= issue.category.name %>
+                  </span>
+                  <time class="text-xs text-gray-500 shrink-0" datetime="<%= issue.created_at.iso8601 %>">
+                    <%= time_ago_in_words(issue.created_at) %> ago
+                  </time>
+                </div>
+                <h2 class="mt-1.5 text-sm font-semibold text-gray-900 truncate">
+                  <%= issue.title.presence || issue.category.name %>
+                </h2>
+                <% if issue.address.present? %>
+                  <p class="mt-0.5 text-xs text-gray-600 truncate"><%= issue.address %></p>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="px-5 py-8 text-center text-sm text-gray-500">No reports match.</p>
+  <% end %>
+</div>

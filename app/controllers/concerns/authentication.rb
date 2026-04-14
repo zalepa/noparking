@@ -36,7 +36,11 @@ module Authentication
 
     def after_authentication_url
       return session.delete(:return_to_after_authenticating) if session[:return_to_after_authenticating]
-      Current.user&.site_admin? ? admin_root_url : issues_url
+      case Current.user&.role&.to_sym
+      when :site_admin then admin_root_url
+      when :manager    then manager_root_url
+      else                  issues_url
+      end
     end
 
     def start_new_session_for(user)
