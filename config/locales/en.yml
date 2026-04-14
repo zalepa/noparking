@@ -1,4 +1,10 @@
 en:
+  app:
+    name: "NoParking"
+
+  registrations_controller:
+    created: "Welcome to %{app_name}!"
+
   nav:
     sign_in: "Sign in"
     sign_up: "Sign up"
@@ -8,7 +14,7 @@ en:
 
   registrations:
     new:
-      title: "Create your ParkSafe account"
+      title: "Create your %{app_name} account"
       subtitle: "Report parking issues and keep track of them from anywhere."
       contact_method_label: "How would you like to sign up?"
       email_tab: "Email"
@@ -99,7 +105,7 @@ en:
 
   pages:
     home:
-      title: "ParkSafe — Community Parking Enforcement"
+      title: "%{app_name} — Community Parking Enforcement"
       nav:
         how_it_works: "How It Works"
         features: "Features"
@@ -107,7 +113,7 @@ en:
       hero:
         badge: "Open-source municipal platform"
         heading_html: "Parking enforcement,<br><span class=\"text-blue-600\">powered by community</span>"
-        description_html: "ParkSafe connects residents with enforcement officers in real time. Report violations, track responses, and help keep your neighborhood safe&mdash;all from your phone."
+        description_html: "%{app_name} connects residents with enforcement officers in real time. Report violations, track responses, and help keep your neighborhood safe&mdash;all from your phone."
         cta_primary: "See how it works"
         cta_github: "View on GitHub"
       how_it_works:
@@ -176,7 +182,7 @@ en:
               - "Customize system settings"
       cta:
         heading: "Ready to get started?"
-        description: "ParkSafe is free and open source. Clone the repository, follow the setup guide, and have your municipal parking enforcement platform running in minutes."
+        description: "%{app_name} is free and open source. Clone the repository, follow the setup guide, and have your municipal parking enforcement platform running in minutes."
         clone: "Clone the repo"
         docs: "Read the docs"
       footer:

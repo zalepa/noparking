@@ -15,7 +15,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for(@user)
-      redirect_to issues_path, notice: "Welcome to ParkSafe!"
+      redirect_to issues_path, notice: t("registrations_controller.created", app_name: t("app.name"))
     else
       flash.now[:alert] = "We couldn't create your account. Please check the form and try again."
       render :new, status: :unprocessable_content
