@@ -1,0 +1,41 @@
+<%#
+  Shared top navigation.
+
+  When `marketing` is true, shows anchor links to marketing-page sections.
+  When false (default), only the brand + auth actions are shown.
+%>
+<% marketing = local_assigns.fetch(:marketing, false) %>
+
+<nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <%= link_to root_path, class: "flex items-center gap-2 shrink-0" do %>
+      <%= render "pages/logo", size: "w-8 h-8" %>
+      <span class="text-xl font-semibold tracking-tight text-gray-900">ParkSafe</span>
+    <% end %>
+
+    <% if marketing %>
+      <div class="hidden md:flex items-center gap-8 text-sm text-gray-600">
+        <a href="#how-it-works" class="hover:text-gray-900 transition"><%= t("pages.home.nav.how_it_works") %></a>
+        <a href="#features" class="hover:text-gray-900 transition"><%= t("pages.home.nav.features") %></a>
+        <a href="#roles" class="hover:text-gray-900 transition"><%= t("pages.home.nav.roles") %></a>
+      </div>
+    <% end %>
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <% if authenticated? %>
+        <%= link_to t("nav.issues"), issues_path,
+              class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
+        <%= link_to t("nav.profile"), edit_profile_path,
+              class: "inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
+        <%= button_to t("nav.sign_out"), session_path, method: :delete,
+              form: { class: "contents" },
+              class: "inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition cursor-pointer" %>
+      <% else %>
+        <%= link_to t("nav.sign_in"), new_session_path,
+              class: "inline-flex items-center justify-center rounded-lg px-3 sm:px-4 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition" %>
+        <%= link_to t("nav.sign_up"), new_registration_path,
+              class: "inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition" %>
+      <% end %>
+    </div>
+  </div>
+</nav>

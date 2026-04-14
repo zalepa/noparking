@@ -1,4 +1,67 @@
 en:
+  nav:
+    sign_in: "Sign in"
+    sign_up: "Sign up"
+    sign_out: "Sign out"
+    issues: "My Issues"
+    profile: "Profile"
+
+  registrations:
+    new:
+      title: "Create your ParkSafe account"
+      subtitle: "Report parking issues and keep track of them from anywhere."
+      contact_method_label: "How would you like to sign up?"
+      email_tab: "Email"
+      phone_tab: "Phone"
+      email_label: "Email address"
+      email_hint: "We'll use this to sign you in and send updates."
+      phone_label: "Phone number"
+      phone_hint: "Digits only. We'll use this to sign you in."
+      password_label: "Password"
+      password_hint: "At least 12 characters. A memorable phrase works well."
+      password_confirmation_label: "Confirm password"
+      submit: "Create account"
+      have_account: "Already have an account?"
+      sign_in_link: "Sign in"
+
+  sessions:
+    new:
+      title: "Welcome back"
+      subtitle: "Sign in with the email or phone you used to register."
+      login_label: "Email or phone number"
+      login_hint: "Enter the email address or phone number on your account."
+      password_label: "Password"
+      submit: "Sign in"
+      forgot: "Forgot your password?"
+      no_account: "Don't have an account?"
+      sign_up_link: "Create one"
+
+  profiles:
+    edit:
+      title: "Your profile"
+      subtitle: "Update the email, phone number, or password on your account."
+      contact_heading: "Contact methods"
+      contact_intro: "You can sign in with either an email address or a phone number — or both. Leave a field blank to remove that contact method, but keep at least one."
+      email_label: "Email address"
+      email_hint: "Used to sign in and receive updates."
+      phone_label: "Phone number"
+      phone_hint: "Digits only. Used to sign in and receive updates."
+      password_heading: "Change password"
+      password_intro: "Leave these fields blank if you don't want to change your password."
+      new_password_label: "New password"
+      new_password_hint: "At least 12 characters. A memorable phrase works well."
+      new_password_confirmation_label: "Confirm new password"
+      current_password_heading: "Confirm it's you"
+      current_password_label: "Current password"
+      current_password_hint: "Enter your current password to save any changes."
+      submit: "Save changes"
+
+  issues:
+    index:
+      title: "My Issues"
+      coming_soon_title: "Coming soon"
+      coming_soon_body: "Your issue dashboard is on its way. You'll be able to submit new parking issues, track their status, and rate responses right here."
+
   pages:
     home:
       title: "ParkSafe — Community Parking Enforcement"

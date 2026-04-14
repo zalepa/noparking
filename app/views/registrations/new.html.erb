@@ -1,0 +1,109 @@
+<% content_for(:title, t(".title")) %>
+
+<main class="min-h-[calc(100vh-4rem)] py-8 sm:py-12 px-4 sm:px-6">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900"><%= t(".title") %></h1>
+      <p class="mt-3 text-base text-gray-600"><%= t(".subtitle") %></p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+      <%= form_with model: @user, url: registration_path, local: true,
+            data: {
+              controller: "contact-method",
+              "contact-method-active-class": "bg-white text-blue-700 shadow-sm",
+              "contact-method-inactive-class": "text-gray-600 hover:text-gray-900"
+            },
+            class: "space-y-6" do |form| %>
+
+        <% if @user.errors.any? %>
+          <div role="alert" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <p class="font-semibold mb-1">Please fix the following:</p>
+            <ul class="list-disc list-inside space-y-0.5">
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%# Contact method toggle %>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2"><%= t(".contact_method_label") %></label>
+          <div role="tablist" class="grid grid-cols-2 gap-1 p-1 bg-gray-100 rounded-lg">
+            <button type="button"
+                    role="tab"
+                    data-contact-method-target="emailTab"
+                    data-action="click->contact-method#selectEmail"
+                    class="py-2.5 px-4 text-sm font-semibold rounded-md transition">
+              <%= t(".email_tab") %>
+            </button>
+            <button type="button"
+                    role="tab"
+                    data-contact-method-target="phoneTab"
+                    data-action="click->contact-method#selectPhone"
+                    class="py-2.5 px-4 text-sm font-semibold rounded-md transition">
+              <%= t(".phone_tab") %>
+            </button>
+          </div>
+          <%= hidden_field_tag "user[contact_method]", @contact_method,
+                data: { "contact-method-target": "methodField" } %>
+        </div>
+
+        <%# Email panel %>
+        <div data-contact-method-target="emailPanel" class="<%= 'hidden' unless @contact_method == 'email' %>">
+          <%= form.label :email, t(".email_label"), class: "block text-sm font-medium text-gray-700" %>
+          <%= form.email_field :email,
+                autocomplete: "email",
+                inputmode: "email",
+                placeholder: "you@example.com",
+                data: { "contact-method-target": "emailInput" },
+                class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          <p class="mt-1.5 text-xs text-gray-500"><%= t(".email_hint") %></p>
+        </div>
+
+        <%# Phone panel %>
+        <div data-contact-method-target="phonePanel" class="<%= 'hidden' unless @contact_method == 'phone' %>">
+          <%= form.label :phone, t(".phone_label"), class: "block text-sm font-medium text-gray-700" %>
+          <%= form.telephone_field :phone,
+                autocomplete: "tel",
+                inputmode: "tel",
+                placeholder: "(555) 555-5555",
+                data: { "contact-method-target": "phoneInput" },
+                class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          <p class="mt-1.5 text-xs text-gray-500"><%= t(".phone_hint") %></p>
+        </div>
+
+        <%# Password %>
+        <div>
+          <%= form.label :password, t(".password_label"), class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password,
+                required: true,
+                autocomplete: "new-password",
+                minlength: User::PASSWORD_MIN_LENGTH,
+                maxlength: 72,
+                class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+          <p class="mt-1.5 text-xs text-gray-500"><%= t(".password_hint") %></p>
+        </div>
+
+        <%# Confirmation %>
+        <div>
+          <%= form.label :password_confirmation, t(".password_confirmation_label"), class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password_confirmation,
+                required: true,
+                autocomplete: "new-password",
+                maxlength: 72,
+                class: "mt-1.5 block w-full rounded-lg border border-gray-300 px-4 py-3 text-base shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+        </div>
+
+        <%= form.submit t(".submit"),
+              class: "w-full rounded-lg bg-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-blue-700 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      <% end %>
+    </div>
+
+    <p class="mt-6 text-center text-sm text-gray-600">
+      <%= t(".have_account") %>
+      <%= link_to t(".sign_in_link"), new_session_path, class: "font-semibold text-blue-600 hover:text-blue-700" %>
+    </p>
+  </div>
+</main>

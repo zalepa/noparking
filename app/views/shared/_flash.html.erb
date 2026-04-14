@@ -1,0 +1,17 @@
+<% if flash.any? { |_, message| message.present? } %>
+  <div class="px-4 sm:px-6 pt-4">
+    <div class="max-w-3xl mx-auto space-y-2">
+      <% flash.each do |type, message| %>
+        <% next if message.blank? %>
+        <% styles = case type.to_s
+                    when "alert", "error" then "bg-red-50 border-red-200 text-red-800"
+                    when "notice", "success" then "bg-emerald-50 border-emerald-200 text-emerald-800"
+                    else "bg-blue-50 border-blue-200 text-blue-800"
+                    end %>
+        <div role="alert" class="rounded-lg border <%= styles %> px-4 py-3 text-sm">
+          <%= message %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

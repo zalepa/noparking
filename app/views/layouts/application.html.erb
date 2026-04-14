@@ -24,6 +24,10 @@
   </head>
 
   <body class="bg-white text-gray-900 antialiased">
-    <%= yield %>
+    <%= render "shared/navbar", marketing: content_for?(:marketing_nav) %>
+    <div class="pt-16">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </div>
   </body>
 </html>
