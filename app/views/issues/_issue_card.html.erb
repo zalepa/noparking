@@ -1,4 +1,4 @@
-<li class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+<li id="<%= dom_id(issue) %>" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
   <% if issue.resolved? %>
     <% res = issue.resolution %>
     <div class="bg-green-50 border-b border-green-200 px-4 sm:px-5 py-3 flex items-center gap-3 flex-wrap">

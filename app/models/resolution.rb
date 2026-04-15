@@ -13,5 +13,6 @@ class Resolution < ApplicationRecord
   def notify_reporter
     issue.notifications.create!(user: issue.user, kind: "resolved")
     Notification.broadcast_refresh_for(issue.user)
+    issue.broadcast_card_refresh
   end
 end

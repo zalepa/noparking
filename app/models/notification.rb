@@ -1,5 +1,5 @@
 class Notification < ApplicationRecord
-  KINDS = %w[assigned resolved].freeze
+  KINDS = %w[assigned released resolved].freeze
 
   belongs_to :user
   belongs_to :issue
@@ -34,6 +34,7 @@ class Notification < ApplicationRecord
   def title
     case kind
     when "assigned" then "An officer has been assigned to your report"
+    when "released" then "Your report is back in the queue"
     when "resolved" then "Your report has been resolved"
     else "Update on your report"
     end

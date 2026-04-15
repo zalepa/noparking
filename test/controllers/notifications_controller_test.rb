@@ -44,9 +44,18 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "assigning an issue creates a notification for the reporter" do
+  test "an officer claiming an issue creates a notification for the reporter" do
+    sign_in_as users(:officer)
     assert_difference -> { @user.notifications.where(kind: "assigned").count }, 1 do
-      @issue.update!(assigned_to: users(:officer), assigned_at: Time.current)
+      post officer_issue_assignment_path(@issue)
+    end
+  end
+
+  test "an officer releasing an issue creates a notification for the reporter" do
+    @issue.update!(assigned_to: users(:officer), assigned_at: Time.current)
+    sign_in_as users(:officer)
+    assert_difference -> { @user.notifications.where(kind: "released").count }, 1 do
+      delete officer_issue_assignment_path(@issue)
     end
   end
 end

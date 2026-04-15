@@ -5,9 +5,18 @@ class Issue < ApplicationRecord
   has_one :resolution, dependent: :destroy
   has_many :notifications, dependent: :delete_all
 
-  after_update_commit :notify_assigned, if: :saved_change_to_assigned_to_id?
-
   has_one_attached :photo
+
+  # Re-render this issue's card for the reporter's subscribed tabs.
+  # Called whenever the issue's state changes (claim/release/resolve).
+  def broadcast_card_refresh
+    Turbo::StreamsChannel.broadcast_replace_to(
+      user, :issues,
+      target: ActionView::RecordIdentifier.dom_id(self),
+      partial: "issues/issue_card",
+      locals: { issue: self }
+    )
+  end
 
   validates :title, length: { maximum: 120 }
   validates :latitude,  presence: true, numericality: { greater_than_or_equal_to: -90,  less_than_or_equal_to: 90 }
@@ -70,12 +79,6 @@ class Issue < ApplicationRecord
   end
 
   private
-
-  def notify_assigned
-    return unless assigned_to_id.present?
-    notifications.create!(user: user, kind: "assigned")
-    Notification.broadcast_refresh_for(user)
-  end
 
   MAX_PHOTO_BYTES = 10.megabytes
   ALLOWED_PHOTO_TYPES = %w[image/jpeg image/jpg image/png image/webp image/heic image/heif].freeze

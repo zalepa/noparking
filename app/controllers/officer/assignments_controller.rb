@@ -12,6 +12,10 @@ class Officer::AssignmentsController < Officer::BaseController
                    .update_all(assigned_to_id: Current.user.id, assigned_at: Time.current)
 
     if updated == 1
+      @issue.reload
+      @issue.notifications.create!(user: @issue.user, kind: "assigned")
+      Notification.broadcast_refresh_for(@issue.user)
+      @issue.broadcast_card_refresh
       redirect_to officer_issue_path(@issue), notice: "You've taken this issue."
     else
       @issue.reload
@@ -26,6 +30,9 @@ class Officer::AssignmentsController < Officer::BaseController
       redirect_to officer_issue_path(@issue), alert: "You can only release issues assigned to you." and return
     end
     @issue.update!(assigned_to_id: nil, assigned_at: nil)
+    @issue.notifications.create!(user: @issue.user, kind: "released")
+    Notification.broadcast_refresh_for(@issue.user)
+    @issue.broadcast_card_refresh
     redirect_to officer_issue_path(@issue), notice: "Issue released."
   end
 

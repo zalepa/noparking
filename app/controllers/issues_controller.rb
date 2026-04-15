@@ -16,7 +16,14 @@ class IssuesController < ApplicationController
     else scope
     end
     scope = scope.order(created_at: (@sort == "oldest" ? :asc : :desc))
-    @issues = scope
+
+    if @status == "all"
+      @issues          = scope.reject(&:resolved?)
+      @resolved_issues = scope.select(&:resolved?)
+    else
+      @issues          = scope
+      @resolved_issues = []
+    end
   end
 
   def new
